@@ -5,16 +5,15 @@
 
 import fs from "fs-extra";
 import glob from "glob";
-import path from "path";
 
 import { ArgError } from "./cli/errors";
 import config from "./config";
-import { testFile, displayPath } from "./testFile";
+import testFile, { displayPath } from "./testFile";
 
 import { Command, Mode } from "./types";
 
 function getFiles(src: string): string[] {
-  const matches = glob.sync(src + "/**/*.*", {
+  const matches = glob.sync(`${src}/**/*.*`, {
     ignore: config.options.ignoreDirs,
   });
   return matches;
@@ -34,38 +33,39 @@ interface FailedResult {
 function runCopyrightOnFiles(filepaths: string[], command: Command): void {
   const edited: string[] = [];
   const failed: FailedResult[] = [];
-  const root = path.resolve(__dirname);
+  // eslint-disable-next-line dot-notation
+  const root = process.env["PWD"] as string;
 
-  for (const filepath of filepaths) {
+  filepaths.forEach((filepath) => {
     const { fileModern, error } = testFile(filepath, root, command);
     if (error) {
       failed.push({ filepath, error } as FailedResult);
     } else if (!fileModern) {
       edited.push(filepath);
     }
-  }
+  });
 
   if (edited.length === 0 && failed.length === 0) {
-    console.log(
+    console.info(
       "All files in this project have the correct copyright information!\nNo action required.\n"
     );
   } else if (edited.length > 0) {
-    console.log(
+    console.info(
       "There were files in this project that had incorrect copyright information, but have been fixed:"
     );
-    console.log(
+    console.info(
       edited
-        .map((path: string) => displayPath(path, root))
-        .map((path: string) => "-> " + path)
+        .map((filepath: string) => displayPath(filepath, root))
+        .map((filepath: string) => `-> ${filepath}`)
         .join("\n")
     );
   }
 
   if (failed.length > 0) {
-    console.log(
+    console.warn(
       "Some files failed to process. You may have to edit these by hand: "
     );
-    console.log(
+    console.warn(
       failed
         .map(({ filepath, error }) => {
           const nicePath = displayPath(filepath, root);
@@ -84,22 +84,21 @@ function runCopyrightOnFiles(filepaths: string[], command: Command): void {
  * @returns All mined files in directories
  * @throws {ArgError} If a directory is found without the recursive option
  */
-function collectFiles(filepaths: string[], mode: Mode): string[] {
-  const files = [];
-  for (const filepath of filepaths) {
-    const stats: fs.Stats = fs.statSync(filepath);
+function collectFiles(fileOrDirPaths: string[], mode: Mode): string[] {
+  const files: string[] = [];
+  fileOrDirPaths.forEach((fileOrDirPath) => {
+    const stats: fs.Stats = fs.statSync(fileOrDirPath);
 
     if (stats.isDirectory() && mode === Mode.Selective) {
       throw new ArgError(
-        `Error: The filepath ${filepath} is a directory. Did you mean to enable '--recursive'?`
+        `Error: The filepath ${fileOrDirPath} is a directory. Did you mean to enable '--recursive'?`
       );
     } else if (stats.isDirectory() && mode === Mode.Recursive) {
-      console.log("Found directory: ", filepath);
-      files.push(...getFiles(filepath));
+      files.push(...getFiles(fileOrDirPath));
     } else if (stats.isFile()) {
-      files.push(filepath);
+      files.push(fileOrDirPath);
     }
-  }
+  });
 
   return files;
 }

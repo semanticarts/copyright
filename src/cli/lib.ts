@@ -5,6 +5,7 @@
 
 import fs from "fs-extra";
 import yargs, { CommandBuilder, Arguments } from "yargs";
+
 import copyright from "../copyright";
 
 import { Command, Mode } from "../types";
@@ -15,7 +16,7 @@ export type Options = {
   recursive: boolean | undefined;
 };
 
-export const builder: CommandBuilder<Options, Options> = (yargs) =>
+export const builder: CommandBuilder<Options, Options> = () =>
   yargs
     .options({
       recursive: {
@@ -31,23 +32,22 @@ export const builder: CommandBuilder<Options, Options> = (yargs) =>
           throw Error("Error: no arguments included!");
         }
 
-        const nonexistent = files.reduce(
+        const nonexistentFiles = files.reduce(
           (nonexistent: string[], filepath: string) => {
             if (!fs.existsSync(filepath)) {
               return [...nonexistent, filepath];
-            } else {
-              return nonexistent;
             }
+            return nonexistent;
           },
           []
         );
 
-        if (nonexistent.length === 1) {
-          throw Error(`Error: file '${nonexistent.pop()}' does not exist`);
-        } else if (nonexistent.length > 1) {
-          const message =
-            "Error: some files did not exist:\n" +
-            nonexistent.map((filepath) => `  -> ${filepath}\n`).join("");
+        if (nonexistentFiles.length === 1) {
+          throw Error(`Error: file '${nonexistentFiles.pop()}' does not exist`);
+        } else if (nonexistentFiles.length > 1) {
+          const message = `Error: some files did not exist:\n${nonexistentFiles
+            .map((filepath) => `  -> ${filepath}\n`)
+            .join("")}`;
 
           throw Error(message);
         }

@@ -25,7 +25,7 @@ const editFile = (filepath: string, newFile: string): void => {
   try {
     fs.writeFileSync(filepath, newFile, "utf8");
   } catch (error) {
-    console.log("editFile() error: ", error);
+    console.error(`editFile() error: ${(error as Error).message}`);
   }
 };
 
@@ -55,12 +55,12 @@ type RegexCallback = (block?: string) => string;
  *    Defaults to false
  */
 const makeRequiredRegex =
-  (name: string, string: string, random: boolean = false): RegexCallback =>
+  (name: string, string: string, random = false): RegexCallback =>
   (block?: string) => {
     const salt = Math.floor(Math.random() * 99999);
     let newName = name;
     newName += random ? salt : "";
-    newName += block ? "_" + block : "";
+    newName += block ? `_${block}` : "";
 
     return `(?<${newName}>${string})`;
   };
@@ -76,9 +76,9 @@ const makeRequiredRegex =
  *    Defaults to false
  */
 const makeOptionalRegex =
-  (name: string, string: string, random: boolean = false): RegexCallback =>
+  (name: string, string: string, random = false): RegexCallback =>
   (block?: string) =>
-    makeRequiredRegex(name, string, random)(block) + "?";
+    `${makeRequiredRegex(name, string, random)(block)}?`;
 
 /**
  * When there is a suffix, we need to put the suffix and its newlines into a
@@ -224,7 +224,7 @@ function reconstructFileFromStructure(
   };
 
   let totalString = "";
-  for (const unsafeGroupName in matchGroups) {
+  for (const unsafeGroupName of Object.keys(matchGroups)) {
     const [groupName, block] = unsafeGroupName.split("_");
     if (!groupName) {
       throw Error("This should never happen! Group name is undefined!");
@@ -255,12 +255,12 @@ function reconstructFileFromStructure(
       // If the copyright is there or isn't, add it
       // Has to be before the if (matchGroup) check because even outdated copyright
       // will match
-      totalString += defaults["copyright"];
+      totalString += defaults.copyright;
     } else if (groupName.includes("newline")) {
       // If the newline is there or isn't, add it
       // Has to account for different capturing group naming
       // e.g. newline1, newline2, ...
-      totalString += defaults["newline"];
+      totalString += defaults.newline;
     } else if (matchGroup) {
       // If something was there, add it
       // e.g. present prefixes, suffixes, content, etc.
@@ -287,20 +287,20 @@ interface FileTestResult {
  * @param root The root path
  * @param command The copyright command
  */
-export function testFile(
+export default function testFile(
   filepath: string,
   root: string,
   command: Command
 ): FileTestResult {
   try {
     if (shouldIgnoreFile(filepath)) {
-      console.log("Ignoring file: ", displayPath(filepath, root));
+      console.info(`Ignoring file: ${displayPath(filepath, root)}`);
       // Returning true doesn't affect the status of the rest of the directory
       // Since we are '&&' them together
       return { fileModern: true };
     }
 
-    console.log("Testing file: ", displayPath(filepath, root));
+    console.info(`Testing file: ${displayPath(filepath, root)}`);
 
     // Get the rule for the extension
     const extension = path.extname(filepath).slice(1); // Remove the '.'

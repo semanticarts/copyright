@@ -9,6 +9,23 @@ import config from "../config";
 import { ExtensionRule } from "../types";
 
 /**
+ * Get the supported extensions. That is, all extensions defined in extensionMap.
+ *
+ * @returns {string[]} The supported extensions, without the dots. E.g, ["js", "md"]
+ */
+const getSupportedExtensions = (): string[] => {
+  const supportedExtensions = Object.values(config.rules).reduce(
+    (extensions: string[], extensionRule: ExtensionRule) => [
+      ...extensions,
+      ...extensionRule.extensions,
+    ],
+    []
+  );
+
+  return supportedExtensions;
+};
+
+/**
  * Test whether or not a file should be tested. This needs to be updated for each project, separately.
  *
  * @param filepath - The filepath of the directory currently being inspected
@@ -45,32 +62,21 @@ export const shouldIgnoreFile = (filepath: string): boolean => {
 export const getExtensionRuleByExtension = (
   extension: string
 ): ExtensionRule => {
-  for (const extensionRule of Object.values(config.rules)) {
+  let foundRule: ExtensionRule | null = null;
+
+  Object.values(config.rules).forEach((extensionRule) => {
     if (extensionRule.extensions.includes(extension)) {
-      return extensionRule;
+      foundRule = extensionRule;
     }
+  });
+
+  if (foundRule) {
+    return foundRule;
   }
 
   throw Error(
     `Extension ${extension} was not found to live inside of an extension rule. This should not happen!`
   );
-};
-
-/**
- * Get the supported extensions. That is, all extensions defined in extensionMap.
- *
- * @returns {string[]} The supported extensions, without the dots. E.g, ["js", "md"]
- */
-const getSupportedExtensions = (): string[] => {
-  const supportedExtensions = Object.values(config.rules).reduce(
-    (extensions: string[], extensionRule: ExtensionRule) => [
-      ...extensions,
-      ...extensionRule.extensions,
-    ],
-    []
-  );
-
-  return supportedExtensions;
 };
 
 /**
@@ -80,6 +86,7 @@ const getSupportedExtensions = (): string[] => {
  * @param {string} root
  * @returns {string}
  */
-export const displayPath = (filepath: string, root: string): string => {
-  return path.relative(root, filepath);
-};
+export function displayPath(filepath: string, root: string): string {
+  if (filepath.startsWith("/")) return path.relative(root, filepath);
+  return filepath;
+}

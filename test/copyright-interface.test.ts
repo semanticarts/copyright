@@ -4,9 +4,11 @@
  */
 
 import util from "util";
-const exec = util.promisify(require("child_process").exec);
 
+import * as child from "child_process";
 import { scriptPath } from "./test-lib";
+
+const exec = util.promisify(child.exec);
 
 type ExecResult = { stdout: string; stderr: string };
 

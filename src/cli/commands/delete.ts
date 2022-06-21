@@ -9,8 +9,8 @@ import { Options, commonHandler } from "../lib";
 
 export { builder } from "../lib";
 
-export const command: string = "delete [-r|--recursive] <args..>";
-export const desc: string =
+export const command = "delete [-r|--recursive] <args..>";
+export const desc =
   "Delete copyright from a list of files (or directories with '--recursive')";
 
 export const handler = (argv: Arguments<Options>): void => {

@@ -7,7 +7,7 @@
     "copyright": "./bin/src/cli/cli.js"
   },
   "scripts": {
-    "lint": "eslint --recursive ./",
+    "lint": "eslint ./ --fix",
     "package": "pkg . --targets node14-macos-x64 --output copyright",
     "build": "npm run clean; tsc; chmod +x ./bin/src/cli/cli.js",
     "clean": "rm -rf ./bin; rm copyright",
@@ -19,12 +19,15 @@
   "author": "Kaspar Poland @ Semantic Arts",
   "license": "ISC",
   "dependencies": {
+    "child_process": "^1.0.2",
     "fs-extra": "^10.1.0",
     "glob": "^8.0.3",
     "lodash": "^4.17.21",
     "path": "^0.12.7",
     "ts-node": "^10.8.1",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "winston": "^3.7.2",
+    "yargs": "^17.5.1"
   },
   "devDependencies": {
     "@types/eslint": "^8.4.3",
@@ -38,9 +41,12 @@
     "@typescript-eslint/parser": "^5.29.0",
     "eslint": "^8.18.0",
     "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "jest": "^28.1.1",
     "pkg": "^5.7.0",
+    "prettier": "^2.7.1",
     "ts-jest": "^28.0.5"
   }
 }

@@ -4,3 +4,5 @@
  */
 
 export class ArgError extends Error {}
+
+export default { ArgError };

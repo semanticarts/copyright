@@ -64,7 +64,7 @@ const config: CopyrightConfig = {
       copyright:
         "#\n" +
         `# Copyright © 2018 - ${new Date().getFullYear()} by Semantic Arts LLC\n` +
-        `# Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license\n` +
+        "# Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license\n" +
         "#",
       options: defaultTopOptions,
     },
@@ -107,11 +107,11 @@ const config: CopyrightConfig = {
 
   options: {
     ignoreDirs: [
-      "node_modules/**/*",
-      "coverage/**/*",
-      "dist/**/*",
-      "test/data/**/*",
-      "bin/**/*",
+      "./node_modules/**",
+      "./coverage/**",
+      "./dist/**",
+      "./test/data/**",
+      "./bin/**",
     ],
     ignoreStartsWithDot: true,
     whitelistDirs: [],

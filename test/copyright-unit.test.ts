@@ -3,7 +3,6 @@
  * @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
  */
 
-/* eslint-disable node/no-unsupported-features/node-builtins */
 import fs from "fs-extra";
 import child from "child_process";
 import path from "path";
@@ -25,7 +24,7 @@ const startup = () => {
   try {
     fs.mkdirSync(tempDir);
   } catch (error) {
-    console.log(`Not creating directory at path ${tempDir}, already exists!`);
+    console.error(`Not creating directory at path ${tempDir}, already exists!`);
     console.error(error);
   }
 };
@@ -34,7 +33,6 @@ const startup = () => {
  * Run copyright on a single file
  *
  * @param tempCommand
- * @param tempMode
  * @param tempPath
  * @param idealData
  * @param casePath
@@ -55,7 +53,7 @@ const testCase = (
 
 const forEachExtension = (
   dataPath: string,
-  callback: (...rest: any) => any
+  callback: (ext: string) => void
 ) => {
   fs.readdirSync(dataPath).forEach((ext) => {
     // Removes .DS_Store and other undesirable directories
@@ -116,6 +114,8 @@ const getIdealData = (directory: string, ext: string, command: Command) => {
     case Command.Delete:
       idealPath = path.join(directory, `noCopyright.${ext}`);
       break;
+    default:
+      throw Error("Wrong command!");
   }
 
   const idealData = fs.readFileSync(idealPath, { encoding: "utf-8" });
