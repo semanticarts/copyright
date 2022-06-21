@@ -1,0 +1,46 @@
+{
+  "name": "copyright",
+  "version": "1.0.0",
+  "description": "A script to automate copyrighting files",
+  "main": "index.js",
+  "bin": {
+    "copyright": "./bin/src/cli/cli.js"
+  },
+  "scripts": {
+    "lint": "eslint --recursive ./",
+    "package": "pkg . --targets node14-macos-x64 --output copyright",
+    "build": "npm run clean; tsc; chmod +x ./bin/src/cli/cli.js",
+    "clean": "rm -rf ./bin; rm copyright",
+    "test": "jest"
+  },
+  "pkg": {
+    "scripts": "bin/**/*.js"
+  },
+  "author": "Kaspar Poland @ Semantic Arts",
+  "license": "ISC",
+  "dependencies": {
+    "fs-extra": "^10.1.0",
+    "glob": "^8.0.3",
+    "lodash": "^4.17.21",
+    "path": "^0.12.7",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8.4.3",
+    "@types/fs-extra": "^9.0.13",
+    "@types/glob": "^7.2.0",
+    "@types/jest": "^28.1.3",
+    "@types/lodash": "^4.14.182",
+    "@types/node": "^18.0.0",
+    "@types/yargs": "^17.0.10",
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
+    "eslint": "^8.18.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^28.1.1",
+    "pkg": "^5.7.0",
+    "ts-jest": "^28.0.5"
+  }
+}
