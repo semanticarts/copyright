@@ -11,7 +11,8 @@
     "package": "pkg . --targets node14-macos-x64 --output copyright",
     "build": "npm run clean; tsc; chmod +x ./bin/src/cli/cli.js",
     "clean": "rm -rf ./bin; rm copyright",
-    "test": "npm run build; jest"
+    "test": "npm run build; jest",
+    "prepare": "husky install"
   },
   "pkg": {
     "scripts": "bin/**/*.js"
