@@ -5,7 +5,8 @@
 
 import path from "path";
 
-import config from "../config";
+import config, { CopyrightConfigRules } from "../config";
+import { ExtensionNotFoundError } from "../errors";
 import { ExtensionRule } from "../types";
 
 /**
@@ -13,8 +14,8 @@ import { ExtensionRule } from "../types";
  *
  * @returns {string[]} The supported extensions, without the dots. E.g, ["js", "md"]
  */
-const getSupportedExtensions = (): string[] => {
-  const supportedExtensions = Object.values(config.rules).reduce(
+const getSupportedExtensions = (extensionRules: ExtensionRule[]): string[] => {
+  const supportedExtensions = extensionRules.reduce(
     (extensions: string[], extensionRule: ExtensionRule) => [
       ...extensions,
       ...extensionRule.extensions,
@@ -28,15 +29,21 @@ const getSupportedExtensions = (): string[] => {
 /**
  * Test whether or not a file should be tested. This needs to be updated for each project, separately.
  *
- * @param filepath - The filepath of the directory currently being inspected
+ * @param filepath - The filepath of the file currently being inspected
  * @return - True if we should IGNORE the directory
  */
 export const shouldIgnoreFile = (filepath: string): boolean => {
   // All of these conditions must be true for the file to be tested
   // That is, NOT ignored IFF these conditions are all true
+  const filename = path.basename(filepath);
+  if (config.options.ignoreStartsWithDot && filename.startsWith(".")) {
+    return true;
+  }
 
   // Get all of the extensionRuleMap[x].extensions into a single array
-  const supportedExtensions = getSupportedExtensions();
+  const supportedExtensions = getSupportedExtensions(
+    Object.values(config.rules)
+  );
   const supportedExtensionsRegex = new RegExp(
     `\\.(${supportedExtensions.join("|")})$`
   );
@@ -60,11 +67,12 @@ export const shouldIgnoreFile = (filepath: string): boolean => {
  * @returns The extension rule for that extension
  */
 export const getExtensionRuleByExtension = (
-  extension: string
+  extension: string,
+  rules: CopyrightConfigRules
 ): ExtensionRule => {
   let foundRule: ExtensionRule | null = null;
 
-  Object.values(config.rules).forEach((extensionRule) => {
+  Object.values(rules).forEach((extensionRule) => {
     if (extensionRule.extensions.includes(extension)) {
       foundRule = extensionRule;
     }
@@ -74,7 +82,7 @@ export const getExtensionRuleByExtension = (
     return foundRule;
   }
 
-  throw Error(
+  throw new ExtensionNotFoundError(
     `Extension ${extension} was not found to live inside of an extension rule. This should not happen!`
   );
 };

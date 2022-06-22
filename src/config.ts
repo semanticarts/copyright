@@ -18,17 +18,17 @@ const defaultBottomOptions: ExtensionRuleOptions = {
   endFileWithNewlineAfterSuffix: true,
 };
 
-interface CopyrightConfigRules {
+export interface CopyrightConfigRules {
   [x: string]: ExtensionRule;
 }
 
-interface CopyrightConfigOptions {
+export interface CopyrightConfigOptions {
   ignoreDirs: string[];
   ignoreStartsWithDot: boolean;
   whitelistDirs: string[];
 }
 
-interface CopyrightConfig {
+export interface CopyrightConfig {
   rules: CopyrightConfigRules;
   options: CopyrightConfigOptions;
 }

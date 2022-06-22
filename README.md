@@ -1,5 +1,6 @@
 # copyright
- A CLI to automate copyright on files
+
+A CLI to automate copyright on files
 
 ## License
 

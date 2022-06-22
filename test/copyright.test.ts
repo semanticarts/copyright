@@ -4,11 +4,12 @@
  */
 
 import fs from "fs-extra";
-import child from "child_process";
 import path from "path";
 
-import { copyrightProject, scriptPath } from "./test-lib";
+import { copyrightProject } from "./test-lib";
 import { Command, Mode } from "../src/types";
+import copyright from "../src/copyright";
+import { ArgError } from "../src/errors";
 
 const testDir = path.join(copyrightProject, "test");
 const tempDir = path.join(testDir, "tmp");
@@ -45,7 +46,8 @@ const testCase = (
 ) => {
   fs.copyFileSync(casePath, tempPath);
 
-  child.execSync(`node ${scriptPath} ${tempCommand} ${tempPath}`);
+  // Run the copyright script
+  copyright([tempPath], tempCommand, Mode.Selective);
 
   const endData = fs.readFileSync(tempPath, { encoding: "utf-8" });
   expect(endData).toEqual(idealData);
@@ -81,14 +83,6 @@ const forEachFile = (
   });
 };
 
-const forEachMode = (callback: (mode: Mode) => void) => {
-  [Mode.Selective, Mode.Recursive].forEach((mode) =>
-    describe(`mode: ${mode}`, () => {
-      callback(mode);
-    })
-  );
-};
-
 const forEachCommand = (callback: (command: Command) => void) => {
   [Command.Update, Command.Delete].forEach((command) => {
     describe(`command: ${command}`, () => {
@@ -122,6 +116,17 @@ const getIdealData = (directory: string, ext: string, command: Command) => {
   return idealData;
 };
 
+describe("Niche cases for copyright()", () => {
+  it("throws an ArgError if a directory is specified without recursive mode", () => {
+    try {
+      copyright(["./"], Command.Update, Mode.Selective);
+      expect(true).toBe(false);
+    } catch (error) {
+      expect(error).toBeInstanceOf(ArgError);
+    }
+  });
+});
+
 describe("Copyright script itself", () => {
   // For some reason beforeAll here or outside of the upper describe
   // doesn't work. Here works, though.
@@ -131,50 +136,47 @@ describe("Copyright script itself", () => {
     const commandSpecificDir = path.join(tempDir, command);
     fs.mkdirSync(commandSpecificDir);
 
-    forEachMode((mode) => {
-      const modeSpecificDir = path.join(commandSpecificDir, mode);
-      fs.mkdirSync(modeSpecificDir);
+    forEachExtension(testDataDir, (ext) => {
+      const extSpecificTestDir = path.join(commandSpecificDir, ext);
+      fs.mkdirSync(extSpecificTestDir);
 
-      forEachExtension(testDataDir, (ext) => {
-        const extSpecificTestDir = path.join(modeSpecificDir, ext);
-        fs.mkdirSync(extSpecificTestDir);
+      const extSpecificDataDir = path.join(testDataDir, ext);
+      const idealData = getIdealData(extSpecificDataDir, ext, command);
 
-        const extSpecificDataDir = path.join(testDataDir, ext);
-        const idealData = getIdealData(extSpecificDataDir, ext, command);
+      describe("mode: selective", () => {
+        // Selective mode works on files, so do one for each file
+        forEachFile(extSpecificDataDir, (filename) => {
+          const testFilePath = path.join(extSpecificDataDir, filename);
+          const tempPath = path.join(extSpecificTestDir, `tmp.${ext}`);
 
-        if (mode === Mode.Selective) {
-          // Selective mode works on files, so do one for each file
-          forEachFile(extSpecificDataDir, (filename) => {
-            const testFilePath = path.join(extSpecificDataDir, filename);
-            const tempPath = path.join(extSpecificTestDir, `tmp.${ext}`);
+          // For every testable file within that extension type
+          it(`tests ${filename}`, () => {
+            testCase(command, tempPath, idealData, testFilePath);
+          });
+        });
+      });
 
-            // For every testable file within that extension type
-            it(`tests ${filename}`, () => {
-              testCase(command, tempPath, idealData, testFilePath);
+      describe("mode: recursive", () => {
+        // Recursive mode works on directories, so do a single one per extension
+        fs.copySync(extSpecificDataDir, extSpecificTestDir, {
+          overwrite: true,
+        });
+
+        // Run the copyright script
+        copyright([extSpecificTestDir], command, Mode.Recursive);
+
+        // Test that all files look ideal
+        forEachFile(extSpecificDataDir, (filename) => {
+          const testFilePath = path.join(extSpecificTestDir, filename);
+
+          // For every testable file within that extension type
+          it(`tests ${filename}`, () => {
+            const endData = fs.readFileSync(testFilePath, {
+              encoding: "utf-8",
             });
+            expect(endData).toEqual(idealData);
           });
-        } else if (mode === Mode.Recursive) {
-          // Recursive mode works on directories, so do a single one per extension
-          fs.copySync(extSpecificDataDir, extSpecificTestDir, {
-            overwrite: true,
-          });
-          child.execSync(
-            `node ${scriptPath} ${command} -r ${extSpecificTestDir}`
-          );
-
-          // Test that all files look ideal
-          forEachFile(extSpecificDataDir, (filename) => {
-            const testFilePath = path.join(extSpecificTestDir, filename);
-
-            // For every testable file within that extension type
-            it(`tests ${filename}`, () => {
-              const endData = fs.readFileSync(testFilePath, {
-                encoding: "utf-8",
-              });
-              expect(endData).toEqual(idealData);
-            });
-          });
-        }
+        });
       });
     });
   });

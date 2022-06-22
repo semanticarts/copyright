@@ -9,7 +9,7 @@ import yargs, { CommandBuilder, Arguments } from "yargs";
 import copyright from "../copyright";
 
 import { Command, Mode } from "../types";
-import { ArgError } from "./errors";
+import { ArgError } from "../errors";
 
 export type Options = {
   args: string[];

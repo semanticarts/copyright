@@ -14,6 +14,7 @@ import {
 } from "./generic";
 
 import { ExtensionRule, Placement, Command } from "../types";
+import { CopyrightConfig } from "../config";
 
 /**
  * Replace the content of a file with new content.
@@ -290,7 +291,8 @@ interface FileTestResult {
 export default function testFile(
   filepath: string,
   root: string,
-  command: Command
+  command: Command,
+  config: CopyrightConfig
 ): FileTestResult {
   try {
     if (shouldIgnoreFile(filepath)) {
@@ -304,7 +306,7 @@ export default function testFile(
 
     // Get the rule for the extension
     const extension = path.extname(filepath).slice(1); // Remove the '.'
-    const extensionRule = getExtensionRuleByExtension(extension);
+    const extensionRule = getExtensionRuleByExtension(extension, config.rules);
 
     // Get the fileData from the file
     const fileData = fs.readFileSync(filepath, { encoding: "utf8" });

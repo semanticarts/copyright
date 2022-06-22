@@ -6,7 +6,7 @@
 import fs from "fs-extra";
 import glob from "glob";
 
-import { ArgError } from "./cli/errors";
+import { ArgError } from "./errors";
 import config from "./config";
 import testFile, { displayPath } from "./testFile";
 
@@ -37,7 +37,7 @@ function runCopyrightOnFiles(filepaths: string[], command: Command): void {
   const root = process.env["PWD"] as string;
 
   filepaths.forEach((filepath) => {
-    const { fileModern, error } = testFile(filepath, root, command);
+    const { fileModern, error } = testFile(filepath, root, command, config);
     if (error) {
       failed.push({ filepath, error } as FailedResult);
     } else if (!fileModern) {

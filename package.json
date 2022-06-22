@@ -11,7 +11,7 @@
     "package": "pkg . --targets node14-macos-x64 --output copyright",
     "build": "npm run clean; tsc; chmod +x ./bin/src/cli/cli.js",
     "clean": "rm -rf ./bin; rm copyright",
-    "test": "jest"
+    "test": "npm run build; jest"
   },
   "pkg": {
     "scripts": "bin/**/*.js"
@@ -25,7 +25,6 @@
     "lodash": "^4.17.21",
     "path": "^0.12.7",
     "ts-node": "^10.8.1",
-    "typescript": "^4.7.4",
     "winston": "^3.7.2",
     "yargs": "^17.5.1"
   },
@@ -47,6 +46,7 @@
     "jest": "^28.1.1",
     "pkg": "^5.7.0",
     "prettier": "^2.7.1",
-    "ts-jest": "^28.0.5"
+    "ts-jest": "^28.0.5",
+    "typescript": "^4.7.4"
   }
 }
