@@ -308,10 +308,7 @@ export default function testFile(
     const extensionRule = getExtensionRuleByExtension(extension, config.rules);
 
     // Get the fileData from the file
-    const fileData = fs.readFileSync(filepath, { encoding: "utf8" });
-    if (typeof fileData !== "string") {
-      throw Error("Data read from file was not a string!");
-    }
+    const fileData = fs.readFileSync(filepath, { encoding: "utf8" }) as string;
 
     const regex = generateRegex(extensionRule);
     const regexResults = regex.exec(fileData);

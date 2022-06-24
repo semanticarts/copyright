@@ -30,6 +30,7 @@
     "lodash": "^4.17.21",
     "path": "^0.12.7",
     "tmp": "^0.2.1",
+    "ts-transformer-keys": "^0.4.3",
     "winston": "^3.7.2",
     "yargs": "^17.5.1"
   },

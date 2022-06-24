@@ -4,14 +4,6 @@
  */
 
 /**
- * General types there ought to be a library for
- */
-
-export type Shallow<X> = {
-  [x in keyof X]: unknown;
-};
-
-/**
  * Copyright specific types
  */
 

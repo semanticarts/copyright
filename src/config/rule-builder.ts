@@ -5,11 +5,12 @@
 
 import { ConfigValidationError } from "../errors";
 import {
+  getExtraneousKeys,
+  getMissingKeys,
+  isShallow,
   Shallow,
-  ExtensionRule,
-  ExtensionRuleOptions,
-  Placement,
-} from "../types";
+} from "../lib/types";
+import { ExtensionRule, ExtensionRuleOptions, Placement } from "../types";
 
 const defaultOptions: { [Property in Placement]: ExtensionRuleOptions } = {
   [Placement.Top]: {
@@ -25,43 +26,25 @@ const defaultOptions: { [Property in Placement]: ExtensionRuleOptions } = {
   },
 };
 
-export default class ExtensionRuleValidator {
+export default class ExtensionRuleBuilder {
   private ruleKey: string;
 
   constructor(ruleKey: string) {
     this.ruleKey = ruleKey;
   }
 
-  public validateRule(rule: unknown): ExtensionRule {
-    const isCorrectlyShallow = (r: unknown): r is Shallow<ExtensionRule> => {
-      return (
-        r !== null &&
-        typeof r === "object" &&
-        "copyright" in r &&
-        "extensions" in r &&
-        "placement" in r
-      );
-    };
+  public buildRule(rule: unknown): ExtensionRule {
+    // See the definition of the Shallow type. I wish this duplication wasn't necessary.
+    const requiredKeys = ["copyright", "extensions", "placement"];
 
-    const missingKeys = [];
-
-    if (!isCorrectlyShallow(rule)) {
+    if (!isShallow<ExtensionRule>(rule, requiredKeys)) {
       if (rule === null || typeof rule !== "object") {
         throw new ConfigValidationError(
           `Rule '${this.ruleKey}' must be an object!`
         );
       }
 
-      if (!("copyright" in rule)) {
-        missingKeys.push("copyright");
-      }
-      if (!("extensions" in rule)) {
-        missingKeys.push("extensions");
-      }
-      if (!("placement" in rule)) {
-        missingKeys.push("placement");
-      }
-
+      const missingKeys = getMissingKeys(rule, requiredKeys);
       throw new ConfigValidationError(
         `Rule '${this.ruleKey}' was missing keys: ${missingKeys.join(", ")}`
       );
@@ -121,15 +104,9 @@ export default class ExtensionRuleValidator {
   ): ExtensionRule["copyright"] {
     const { copyright } = rule;
 
-    if (copyright === undefined) {
+    if (copyright === undefined || typeof copyright !== "string") {
       throw new ConfigValidationError(
-        `The extension rule '${this.ruleKey}' had no 'copyright' string!`
-      );
-    }
-
-    if (typeof copyright !== "string") {
-      throw new ConfigValidationError(
-        `The extension rule '${this.ruleKey}' had a 'copyright' key that wasn't a string!`
+        `The extension rule '${this.ruleKey}' must have a 'copyright' string!`
       );
     }
 
@@ -153,18 +130,13 @@ export default class ExtensionRuleValidator {
   ): ExtensionRule["extensions"] {
     const { extensions } = rule;
 
-    if (!extensions) {
-      throw new ConfigValidationError(
-        `The extension rule '${this.ruleKey}' had no 'extensions' array!`
-      );
-    }
-
     if (
+      !extensions ||
       !Array.isArray(extensions) ||
       !extensions.every((elem) => typeof elem === "string")
     ) {
       throw new ConfigValidationError(
-        `The extension rule '${this.ruleKey}' key 'extensions' needs to be an array of strings!`
+        `The extension rule '${this.ruleKey}' key 'extensions' must be an array of strings!`
       );
     }
 
@@ -182,21 +154,15 @@ export default class ExtensionRuleValidator {
   ): ExtensionRule["placement"] {
     const { placement } = rule;
 
-    if (placement === undefined) {
-      throw new ConfigValidationError(
-        `Placement needs to be included in rule '${this.ruleKey}'!`
-      );
-    }
-
     // Resolve placements towards the Placement enum
     switch (placement) {
-      case "top" || Placement.Top:
+      case "top":
         return Placement.Top;
-      case "bottom" || Placement.Bottom:
+      case "bottom":
         return Placement.Bottom;
       default:
         throw new ConfigValidationError(
-          `Placement on extension rule '${this.ruleKey}' got '${placement}', not one of 'top' or 'bottom'!`
+          `Placement on extension rule '${this.ruleKey}' got '${placement}', must be one of 'top' or 'bottom'!`
         );
     }
   }
@@ -209,13 +175,35 @@ export default class ExtensionRuleValidator {
     // Make sure placement is validated before options
     const placement = this.validatePlacement(rule);
 
-    if (options !== undefined && typeof options === "object") {
-      return {
-        ...defaultOptions[placement],
-        ...options,
-      };
+    if (!options) {
+      return defaultOptions[placement];
     }
 
-    return defaultOptions[placement];
+    if (typeof options !== "object") {
+      throw new ConfigValidationError(
+        `The extension rule ${this.ruleKey} options must either be undefined or an object!`
+      );
+    }
+
+    // See the definition of the Shallow type, I wish I didn't have to duplicate
+    const validKeys = [
+      "extraNewlineBetweenCopyrightAndContent",
+      "forcePrefixOrSuffix",
+      "extraNewlineBetweenCopyrightAndPrefix",
+      "extraNewlineBetweenCopyrightAndSuffix",
+      "endFileWithNewlineAfterSuffix",
+    ];
+
+    // Check for valid keys
+    const extraneousKeys = getExtraneousKeys(options, validKeys);
+    if (extraneousKeys.length > 0) {
+      throw new ConfigValidationError(
+        `The extension rule '${
+          this.ruleKey
+        }' has options with extraneous keys: ${extraneousKeys.join(", ")}!`
+      );
+    }
+
+    return { ...defaultOptions[placement], ...options };
   }
 }
