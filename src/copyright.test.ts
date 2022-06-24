@@ -6,10 +6,10 @@
 import fs from "fs-extra";
 import path from "path";
 
-import { copyrightProject } from "./test-lib";
-import { Command, Mode } from "../src/types";
-import copyright from "../src/copyright";
-import { ArgError } from "../src/errors";
+import { copyrightProject } from "../test/test-lib";
+import { Command, Mode } from "./types";
+import copyright from "./copyright";
+import { ArgError } from "./errors";
 
 const testDir = path.join(copyrightProject, "test");
 const tempDir = path.join(testDir, "tmp");

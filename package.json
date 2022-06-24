@@ -1,32 +1,35 @@
 {
-  "name": "copyright",
+  "name": "@semantic-arts/copyright",
   "version": "1.0.0",
   "description": "A script to automate copyrighting files",
   "main": "index.js",
   "bin": {
-    "copyright": "./bin/src/cli/cli.js"
+    "copyright": "./dist/src/cli/cli.js"
   },
+  "files": [
+    "./dist/**/*.js"
+  ],
   "scripts": {
     "lint": "eslint ./ --fix",
     "package": "pkg . --targets node14-macos-x64 --output copyright",
-    "build": "npm run clean; tsc; chmod +x ./bin/src/cli/cli.js",
-    "clean": "rm -rf ./bin; rm copyright",
+    "build": "npm run clean; tsc; chmod +x ./dist/src/cli/cli.js",
+    "clean": "rm -rf ./dist; rm copyright",
     "test": "npm run build; jest",
     "prepare": "husky install"
   },
   "pkg": {
-    "scripts": "bin/**/*.js"
+    "scripts": "dist/**/*.js"
   },
   "author": "Kaspar Poland @ Semantic Arts",
   "license": "ISC",
   "dependencies": {
     "child_process": "^1.0.2",
+    "cosmiconfig": "^7.0.1",
     "fs-extra": "^10.1.0",
     "glob": "^8.0.3",
-    "husky": "^8.0.1",
     "lodash": "^4.17.21",
     "path": "^0.12.7",
-    "ts-node": "^10.8.1",
+    "tmp": "^0.2.1",
     "winston": "^3.7.2",
     "yargs": "^17.5.1"
   },
@@ -37,6 +40,7 @@
     "@types/jest": "^28.1.3",
     "@types/lodash": "^4.14.182",
     "@types/node": "^18.0.0",
+    "@types/tmp": "^0.2.3",
     "@types/yargs": "^17.0.10",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
@@ -45,10 +49,12 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^8.0.1",
     "jest": "^28.1.1",
     "pkg": "^5.7.0",
     "prettier": "^2.7.1",
     "ts-jest": "^28.0.5",
+    "ts-node": "^10.8.1",
     "typescript": "^4.7.4"
   }
 }

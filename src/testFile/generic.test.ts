@@ -3,7 +3,7 @@
  * @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
  */
 
-import config from "../config";
+import config from "../config/config";
 import { ExtensionNotFoundError } from "../errors";
 import {
   shouldIgnoreFile,

@@ -6,4 +6,4 @@
 import path from "path";
 
 export const copyrightProject = path.join("./");
-export const scriptPath = path.join(copyrightProject, "bin/src/cli/cli.js");
+export const scriptPath = path.join(copyrightProject, "dist/src/cli/cli.js");

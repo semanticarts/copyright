@@ -13,8 +13,7 @@ import {
   getExtensionRuleByExtension,
 } from "./generic";
 
-import { ExtensionRule, Placement, Command } from "../types";
-import { CopyrightConfig } from "../config";
+import { CopyrightConfig, ExtensionRule, Placement, Command } from "../types";
 
 /**
  * Replace the content of a file with new content.

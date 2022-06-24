@@ -6,8 +6,8 @@
 import child from "child_process";
 import util from "util";
 
-import { Command, Mode } from "../src/types";
-import { scriptPath } from "./test-lib";
+import { Command, Mode } from "../types";
+import { scriptPath } from "../../test/test-lib";
 
 const exec = util.promisify(child.exec);
 

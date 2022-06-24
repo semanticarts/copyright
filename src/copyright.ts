@@ -7,7 +7,7 @@ import fs from "fs-extra";
 import glob from "glob";
 
 import { ArgError } from "./errors";
-import config from "./config";
+import config from "./config/config";
 import testFile, { displayPath } from "./testFile";
 
 import { Command, Mode } from "./types";

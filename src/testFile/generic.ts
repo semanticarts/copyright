@@ -5,9 +5,9 @@
 
 import path from "path";
 
-import config, { CopyrightConfigRules } from "../config";
+import config from "../config/config";
 import { ExtensionNotFoundError } from "../errors";
-import { ExtensionRule } from "../types";
+import { ExtensionRule, CopyrightConfigRules } from "../types";
 
 /**
  * Get the supported extensions. That is, all extensions defined in extensionMap.

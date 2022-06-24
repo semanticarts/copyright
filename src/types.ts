@@ -3,6 +3,18 @@
  * @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
  */
 
+/**
+ * General types there ought to be a library for
+ */
+
+export type Shallow<X> = {
+  [x in keyof X]: unknown;
+};
+
+/**
+ * Copyright specific types
+ */
+
 export enum Command {
   Update = "update",
   Delete = "delete",
@@ -14,8 +26,8 @@ export enum Mode {
 }
 
 export enum Placement {
-  Top,
-  Bottom,
+  Top = "top",
+  Bottom = "bottom",
 }
 
 export interface ExtensionRuleOptions {
@@ -33,4 +45,19 @@ export interface ExtensionRule {
   options: ExtensionRuleOptions;
   prefix?: string;
   suffix?: string;
+}
+
+export interface CopyrightConfigRules {
+  [x: string]: ExtensionRule;
+}
+
+export interface CopyrightConfigOptions {
+  ignoreDirs: string[];
+  ignoreStartsWithDot: boolean;
+  whitelistDirs: string[];
+}
+
+export interface CopyrightConfig {
+  rules: CopyrightConfigRules;
+  options: CopyrightConfigOptions;
 }
