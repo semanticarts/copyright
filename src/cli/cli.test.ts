@@ -5,9 +5,11 @@
 
 import child from "child_process";
 import util from "util";
+import path from "path";
 
 import { Command, Mode } from "../types";
-import { scriptPath } from "../../test/test-lib";
+
+const scriptPath = path.join("./", "dist/src/cli/cli.js");
 
 const exec = util.promisify(child.exec);
 

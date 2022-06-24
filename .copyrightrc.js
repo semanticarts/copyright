@@ -23,7 +23,7 @@ module.exports = {
     },
 
     hashes: {
-      extensions: ["trig", "nq", "ttl"],
+      extensions: ["trig", "nq", "ttl", "rq"],
       placement: "top",
       copyright:
         "#\n" +

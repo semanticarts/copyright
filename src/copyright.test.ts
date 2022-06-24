@@ -6,12 +6,11 @@
 import fs from "fs-extra";
 import path from "path";
 
-import { copyrightProject } from "../test/test-lib";
 import { Command, Mode } from "./types";
 import copyright from "./copyright";
 import { ArgError } from "./errors";
 
-const testDir = path.join(copyrightProject, "test");
+const testDir = path.join("./", "test");
 const tempDir = path.join(testDir, "tmp");
 const testDataDir = path.join(testDir, "data");
 
