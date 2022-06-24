@@ -5,6 +5,6 @@
 
 import testFile from "./testFile";
 
-export { displayPath } from "./generic";
+export { displayPath } from "./util";
 
 export default testFile;

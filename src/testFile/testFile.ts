@@ -11,7 +11,7 @@ import {
   shouldIgnoreFile,
   displayPath,
   getExtensionRuleByExtension,
-} from "./generic";
+} from "./util";
 
 import { CopyrightConfig, ExtensionRule, Placement, Command } from "../types";
 
@@ -107,14 +107,14 @@ const makeLookaheadEnd = (): string => "))";
  * The general structure of a file is:
  *    prefix      (if prefix)
  *    newline     (if prefix)
- *    newline     (if top)
+ *    newline     (if prefix)
  *    copyright   (if top)
  *    newline     (if top)
  *    newline     (if top)
  *    content
  *    copyright   (if bottom)
  *    newline     (if bottom)
- *    newline     (if bottom)
+ *    newline     (if suffix)
  *    suffix      (if suffix)
  *    newline     (if suffix)
  *
@@ -143,15 +143,14 @@ const generateRegex = (extensionRule: ExtensionRule): RegExp => {
     copyright: unsafeCopyright,
   } = extensionRule;
 
-  const copyrightString = escapeRegExp(unsafeCopyright);
-  const copyrightRegexString = replaceYearWithRegex(copyrightString);
+  // The copyright string with [0-9]{4} instead of current year
+  const copyrightRegexString = replaceYearWithRegex(
+    escapeRegExp(unsafeCopyright)
+  );
 
   const prefix = makeOptionalRegex("prefix", escapeRegExp(unsafePrefix));
   const suffix = makeOptionalRegex("suffix", escapeRegExp(unsafeSuffix));
-  const copyright = makeOptionalRegex(
-    "copyright",
-    `(?:${copyrightString})|(?:${copyrightRegexString})`
-  );
+  const copyright = makeOptionalRegex("copyright", `${copyrightRegexString}`);
   const newline = makeOptionalRegex("newline", "\n", true);
   const newlineRequired = makeRequiredRegex("newline", "\n", true);
   const content = () => "(?<content>[\\s\\S]*?)"; // Special because of the lookahead
@@ -252,9 +251,8 @@ function reconstructFileFromStructure(
         totalString += matchGroup;
       }
     } else if (groupName === "copyright") {
-      // If the copyright is there or isn't, add it
-      // Has to be before the if (matchGroup) check because even outdated copyright
-      // will match
+      // If the copyright is there or isn't, add the default
+      // which is the copyright string
       totalString += defaults.copyright;
     } else if (groupName.includes("newline")) {
       // If the newline is there or isn't, add it

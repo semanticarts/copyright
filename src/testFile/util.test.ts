@@ -9,7 +9,7 @@ import {
   shouldIgnoreFile,
   displayPath,
   getExtensionRuleByExtension,
-} from "./generic";
+} from "./util";
 
 describe("shouldIgnoreFile()", () => {
   it("should ignore dot files", () => {
