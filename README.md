@@ -2,6 +2,8 @@
 
 A CLI to automate copyright on files
 
+See the documentation under the `./docs/` directory.
+
 ## License
 
 - Copyright © 2018 - 2022 by Semantic Arts LLC
