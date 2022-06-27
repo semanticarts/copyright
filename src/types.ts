@@ -25,9 +25,9 @@ export enum Placement {
 export interface ExtensionRuleOptions {
   extraNewlineBetweenCopyrightAndContent: boolean;
   forcePrefixOrSuffix: boolean;
-  extraNewlineBetweenCopyrightAndPrefix?: boolean;
-  extraNewlineBetweenCopyrightAndSuffix?: boolean;
-  endFileWithNewlineAfterSuffix?: boolean;
+  extraNewlineBetweenCopyrightAndPrefix?: boolean | undefined;
+  extraNewlineBetweenCopyrightAndSuffix?: boolean | undefined;
+  endFileWithNewlineAfterSuffix?: boolean | undefined;
 }
 
 export interface ExtensionRule {
@@ -35,8 +35,8 @@ export interface ExtensionRule {
   placement: Placement;
   copyright: string;
   options: ExtensionRuleOptions;
-  prefix?: string;
-  suffix?: string;
+  prefix?: string | undefined;
+  suffix?: string | undefined;
 }
 
 export interface CopyrightConfigRules {
