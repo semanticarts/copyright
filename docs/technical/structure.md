@@ -9,3 +9,8 @@ After the command is parsed, the config object is searched for. This is defined 
 After the config object has been constructed, the main script is in `copyright.ts`. This first determines the files to run on by using the `Mode` to recursively search (or not) for files. After the files have been collected, each of them runs through a `testFile()` function, which is the meat of the copyright operation.
 
 The `testFile/` directory includes `testFile.ts`, which is where that function is. It is the meat of the package, described in `strategy.md`.
+
+## License
+
+- Copyright © 2018 - 2022 by Semantic Arts LLC
+- Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license

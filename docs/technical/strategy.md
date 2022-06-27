@@ -26,3 +26,8 @@ After we identify the various groups that are missing, we can reconstruct the fi
 The reason the block exists on a capture group name is because if the prefix is defined and the option `forcePrefixOrSuffix` is true, we want to enforce capture groups ending in `_prefix`, but if that option is false, we DON'T want to enforce those groups. We essentially just need a way of telling which capture group belongs to what part of a file, using the capture group name.
 
 The only complex bit comes from using positive lookaheads and non-greedy capturing groups for matching content (matched with the regex `/[\s\S]*/`, which matches EVERYTHING) and the bottom-placed copyrights, but that just takes some experimenting.
+
+## License
+
+- Copyright © 2018 - 2022 by Semantic Arts LLC
+- Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
