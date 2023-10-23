@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 #
-# @copyright Copyright © 2018 - 2022 by Semantic Arts LLC
+# @copyright Copyright © 2018 - 2023 by Semantic Arts LLC
 # @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
 #
 
