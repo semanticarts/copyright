@@ -12,5 +12,5 @@ The `testFile/` directory includes `testFile.ts`, which is where that function i
 
 ## License
 
-- Copyright © 2018 - 2022 by Semantic Arts LLC
+- Copyright © 2018 - 2023 by Semantic Arts LLC
 - Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
