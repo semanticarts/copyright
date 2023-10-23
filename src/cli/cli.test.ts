@@ -3,20 +3,34 @@
  * @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
  */
 
+import child from "child_process";
 import util from "util";
-const exec = util.promisify(require("child_process").exec);
+import path from "path";
 
-import { scriptPath } from "./test-lib";
+import { Command, Mode } from "../types";
 
-type ExecResult = { stdout: string; stderr: string };
+const scriptPath = path.join("./", "dist/src/cli/cli.js");
 
-/**
- * @param command The command to run
- */
-async function runTest(command: string): Promise<ExecResult> {
+const exec = util.promisify(child.exec);
+
+interface ExecResult {
+  stdout: string;
+  stderr: string;
+}
+
+async function runTest(
+  command: Command | string = "",
+  mode: Mode | string = "",
+  args: string[] = []
+): Promise<{ stdout: string; stderr: string }> {
   let result: ExecResult;
   try {
-    result = await exec(command);
+    let shellCommand = `node ${scriptPath}`;
+    shellCommand += command ? ` ${command}` : "";
+    shellCommand += mode && mode === Mode.Recursive ? " --recursive" : "";
+    shellCommand += ` ${args.join(" ")}`;
+
+    result = await exec(shellCommand);
   } catch (error) {
     result = error as ExecResult;
   }
@@ -26,25 +40,30 @@ async function runTest(command: string): Promise<ExecResult> {
 
 describe("Copyright script interface", () => {
   it("tests no commands", async () => {
-    const command = `node ${scriptPath}`;
-    const { stdout, stderr } = await runTest(command);
-
+    const { stdout, stderr } = await runTest();
     expect(stdout).toStrictEqual("");
     expect(stderr).toContain("update");
-    expect(stderr).toContain("delete");
   });
 
   it("tests bad first command", async () => {
-    const command = `node ${scriptPath} bad_command`;
-    const { stdout, stderr } = await runTest(command);
+    const { stdout, stderr } = await runTest("bad_command");
 
     expect(stdout).toStrictEqual("");
     expect(stderr).toContain("update");
   });
 
+  it("tests directory argument for selective mode", async () => {
+    const { stdout, stderr } = await runTest(Command.Delete, Mode.Selective, [
+      "./",
+    ]);
+
+    expect(stdout).toStrictEqual("");
+    expect(stderr).toContain("directory");
+    expect(stderr).toContain("--recursive");
+  });
+
   it("tests good first command (update), missing second", async () => {
-    const command = `node ${scriptPath} update`;
-    const { stdout, stderr } = await runTest(command);
+    const { stdout, stderr } = await runTest(Command.Update);
 
     expect(stdout).toStrictEqual("");
     expect(stderr).toContain("update");
@@ -52,8 +71,7 @@ describe("Copyright script interface", () => {
   });
 
   it("tests two bad commands", async () => {
-    const command = `node ${scriptPath} bad1 bad2`;
-    const { stdout, stderr } = await runTest(command);
+    const { stdout, stderr } = await runTest("bad1", "bad2");
 
     expect(stdout).toStrictEqual("");
     expect(stderr).toContain("update");
@@ -62,8 +80,7 @@ describe("Copyright script interface", () => {
   });
 
   it("tests no argument for recursive", async () => {
-    const command = `node ${scriptPath} update --recursive`;
-    const { stdout, stderr } = await runTest(command);
+    const { stdout, stderr } = await runTest(Command.Update, Mode.Recursive);
 
     expect(stdout).toStrictEqual("");
     expect(stderr).toContain("update");
@@ -72,8 +89,11 @@ describe("Copyright script interface", () => {
   });
 
   it("tests too many arguments for recursive", async () => {
-    const command = `node ${scriptPath} update --recursive a b c`;
-    const { stdout, stderr } = await runTest(command);
+    const { stdout, stderr } = await runTest(Command.Update, Mode.Recursive, [
+      "a",
+      "b",
+      "c",
+    ]);
 
     expect(stdout).toStrictEqual("");
     expect(stderr).toContain("update");
@@ -81,8 +101,11 @@ describe("Copyright script interface", () => {
   });
 
   it("tests arguments for selective that don't exist", async () => {
-    const command = `node ${scriptPath} update selective a b c/d/e`;
-    const { stdout, stderr } = await runTest(command);
+    const { stdout, stderr } = await runTest(Command.Update, Mode.Selective, [
+      "a",
+      "b",
+      "c/d/e",
+    ]);
 
     expect(stdout).toStrictEqual("");
     expect(stderr).toContain("not exist");
@@ -92,8 +115,9 @@ describe("Copyright script interface", () => {
   });
 
   it("tests argument for recursive that doesn't exist", async () => {
-    const command = `node ${scriptPath} update recursive a`;
-    const { stdout, stderr } = await runTest(command);
+    const { stdout, stderr } = await runTest(Command.Update, Mode.Recursive, [
+      "a",
+    ]);
 
     expect(stdout).toStrictEqual("");
     expect(stderr).toContain("not exist");

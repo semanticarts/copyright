@@ -3,6 +3,10 @@
  * @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
  */
 
+/**
+ * Copyright specific types
+ */
+
 export enum Command {
   Update = "update",
   Delete = "delete",
@@ -14,16 +18,16 @@ export enum Mode {
 }
 
 export enum Placement {
-  Top,
-  Bottom,
+  Top = "top",
+  Bottom = "bottom",
 }
 
 export interface ExtensionRuleOptions {
   extraNewlineBetweenCopyrightAndContent: boolean;
   forcePrefixOrSuffix: boolean;
-  extraNewlineBetweenCopyrightAndPrefix?: boolean;
-  extraNewlineBetweenCopyrightAndSuffix?: boolean;
-  endFileWithNewlineAfterSuffix?: boolean;
+  extraNewlineBetweenCopyrightAndPrefix?: boolean | undefined;
+  extraNewlineBetweenCopyrightAndSuffix?: boolean | undefined;
+  endFileWithNewlineAfterSuffix?: boolean | undefined;
 }
 
 export interface ExtensionRule {
@@ -31,6 +35,21 @@ export interface ExtensionRule {
   placement: Placement;
   copyright: string;
   options: ExtensionRuleOptions;
-  prefix?: string;
-  suffix?: string;
+  prefix?: string | undefined;
+  suffix?: string | undefined;
+}
+
+export interface CopyrightConfigRules {
+  [x: string]: ExtensionRule;
+}
+
+export interface CopyrightConfigOptions {
+  ignoreDirs: string[];
+  ignoreStartsWithDot: boolean;
+  whitelistDirs: string[];
+}
+
+export interface CopyrightConfig {
+  rules: CopyrightConfigRules;
+  options: CopyrightConfigOptions;
 }

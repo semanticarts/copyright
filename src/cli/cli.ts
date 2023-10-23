@@ -8,7 +8,8 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
-function main() {
+export default function main() {
+  // eslint-disable-next-line no-unused-expressions
   yargs(hideBin(process.argv))
     .usage("Usage: $0 <command> [-r|--recursive] <args..>")
     .commandDir("commands")

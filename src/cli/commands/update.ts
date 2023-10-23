@@ -9,8 +9,8 @@ import { Options, commonHandler } from "../lib";
 
 export { builder } from "../lib";
 
-export const command: string = "update [-r|--recursive] <args..>";
-export const desc: string =
+export const command = "update [-r|--recursive] <args..>";
+export const desc =
   "Update or add copyright to a list of files (or directories with '--recursive')";
 
 export const handler = (argv: Arguments<Options>): void => {

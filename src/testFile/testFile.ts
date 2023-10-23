@@ -11,9 +11,9 @@ import {
   shouldIgnoreFile,
   displayPath,
   getExtensionRuleByExtension,
-} from "./generic";
+} from "./util";
 
-import { ExtensionRule, Placement, Command } from "../types";
+import { CopyrightConfig, ExtensionRule, Placement, Command } from "../types";
 
 /**
  * Replace the content of a file with new content.
@@ -25,7 +25,7 @@ const editFile = (filepath: string, newFile: string): void => {
   try {
     fs.writeFileSync(filepath, newFile, "utf8");
   } catch (error) {
-    console.log("editFile() error: ", error);
+    console.error(`editFile() error: ${(error as Error).message}`);
   }
 };
 
@@ -55,12 +55,12 @@ type RegexCallback = (block?: string) => string;
  *    Defaults to false
  */
 const makeRequiredRegex =
-  (name: string, string: string, random: boolean = false): RegexCallback =>
+  (name: string, string: string, random = false): RegexCallback =>
   (block?: string) => {
     const salt = Math.floor(Math.random() * 99999);
     let newName = name;
     newName += random ? salt : "";
-    newName += block ? "_" + block : "";
+    newName += block ? `_${block}` : "";
 
     return `(?<${newName}>${string})`;
   };
@@ -76,9 +76,9 @@ const makeRequiredRegex =
  *    Defaults to false
  */
 const makeOptionalRegex =
-  (name: string, string: string, random: boolean = false): RegexCallback =>
+  (name: string, string: string, random = false): RegexCallback =>
   (block?: string) =>
-    makeRequiredRegex(name, string, random)(block) + "?";
+    `${makeRequiredRegex(name, string, random)(block)}?`;
 
 /**
  * When there is a suffix, we need to put the suffix and its newlines into a
@@ -107,14 +107,14 @@ const makeLookaheadEnd = (): string => "))";
  * The general structure of a file is:
  *    prefix      (if prefix)
  *    newline     (if prefix)
- *    newline     (if top)
+ *    newline     (if prefix)
  *    copyright   (if top)
  *    newline     (if top)
  *    newline     (if top)
  *    content
  *    copyright   (if bottom)
  *    newline     (if bottom)
- *    newline     (if bottom)
+ *    newline     (if suffix)
  *    suffix      (if suffix)
  *    newline     (if suffix)
  *
@@ -143,15 +143,14 @@ const generateRegex = (extensionRule: ExtensionRule): RegExp => {
     copyright: unsafeCopyright,
   } = extensionRule;
 
-  const copyrightString = escapeRegExp(unsafeCopyright);
-  const copyrightRegexString = replaceYearWithRegex(copyrightString);
+  // The copyright string with [0-9]{4} instead of current year
+  const copyrightRegexString = replaceYearWithRegex(
+    escapeRegExp(unsafeCopyright)
+  );
 
   const prefix = makeOptionalRegex("prefix", escapeRegExp(unsafePrefix));
   const suffix = makeOptionalRegex("suffix", escapeRegExp(unsafeSuffix));
-  const copyright = makeOptionalRegex(
-    "copyright",
-    `(?:${copyrightString})|(?:${copyrightRegexString})`
-  );
+  const copyright = makeOptionalRegex("copyright", `${copyrightRegexString}`);
   const newline = makeOptionalRegex("newline", "\n", true);
   const newlineRequired = makeRequiredRegex("newline", "\n", true);
   const content = () => "(?<content>[\\s\\S]*?)"; // Special because of the lookahead
@@ -224,7 +223,7 @@ function reconstructFileFromStructure(
   };
 
   let totalString = "";
-  for (const unsafeGroupName in matchGroups) {
+  for (const unsafeGroupName of Object.keys(matchGroups)) {
     const [groupName, block] = unsafeGroupName.split("_");
     if (!groupName) {
       throw Error("This should never happen! Group name is undefined!");
@@ -252,15 +251,14 @@ function reconstructFileFromStructure(
         totalString += matchGroup;
       }
     } else if (groupName === "copyright") {
-      // If the copyright is there or isn't, add it
-      // Has to be before the if (matchGroup) check because even outdated copyright
-      // will match
-      totalString += defaults["copyright"];
+      // If the copyright is there or isn't, add the default
+      // which is the copyright string
+      totalString += defaults.copyright;
     } else if (groupName.includes("newline")) {
       // If the newline is there or isn't, add it
       // Has to account for different capturing group naming
       // e.g. newline1, newline2, ...
-      totalString += defaults["newline"];
+      totalString += defaults.newline;
     } else if (matchGroup) {
       // If something was there, add it
       // e.g. present prefixes, suffixes, content, etc.
@@ -287,30 +285,28 @@ interface FileTestResult {
  * @param root The root path
  * @param command The copyright command
  */
-export function testFile(
+export default function testFile(
   filepath: string,
   root: string,
-  command: Command
+  command: Command,
+  config: CopyrightConfig
 ): FileTestResult {
   try {
     if (shouldIgnoreFile(filepath)) {
-      console.log("Ignoring file: ", displayPath(filepath, root));
+      console.info(`Ignoring file: ${displayPath(filepath, root)}`);
       // Returning true doesn't affect the status of the rest of the directory
       // Since we are '&&' them together
       return { fileModern: true };
     }
 
-    console.log("Testing file: ", displayPath(filepath, root));
+    console.info(`Testing file: ${displayPath(filepath, root)}`);
 
     // Get the rule for the extension
     const extension = path.extname(filepath).slice(1); // Remove the '.'
-    const extensionRule = getExtensionRuleByExtension(extension);
+    const extensionRule = getExtensionRuleByExtension(extension, config.rules);
 
     // Get the fileData from the file
-    const fileData = fs.readFileSync(filepath, { encoding: "utf8" });
-    if (typeof fileData !== "string") {
-      throw Error("Data read from file was not a string!");
-    }
+    const fileData = fs.readFileSync(filepath, { encoding: "utf8" }) as string;
 
     const regex = generateRegex(extensionRule);
     const regexResults = regex.exec(fileData);
