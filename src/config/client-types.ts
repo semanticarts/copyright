@@ -135,7 +135,7 @@ export const clientDefinedExtensionRuleSchema = z
 export const clientDefinedCopyrightConfigSchema = z
   .object({
     rules: z
-      .record(clientDefinedExtensionRuleSchema)
+      .record(z.string(), clientDefinedExtensionRuleSchema)
       .refine(
         (data) => Object.keys(data).length > 0,
         "Config must include at least one extension rule in the 'rules' object!"

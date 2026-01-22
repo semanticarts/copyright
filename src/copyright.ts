@@ -4,7 +4,7 @@
  */
 
 import fs from "fs-extra";
-import glob from "glob";
+import { globSync } from "glob";
 
 import { ArgError } from "./errors";
 import config from "./config/config";
@@ -13,7 +13,7 @@ import testFile, { displayPath } from "./testFile";
 import { Command, Mode } from "./types";
 
 function getFiles(src: string): string[] {
-  const matches = glob.sync(`${src}/**/*.*`, {
+  const matches = globSync(`${src}/**/*.*`, {
     ignore: config.options.ignoreDirs,
   });
   return matches;

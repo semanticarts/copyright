@@ -75,7 +75,8 @@ describe("Copyright config", () => {
           ).message.toLowerCase();
           expect(message).toContain("config");
           expect(message).toContain("rules");
-          expect(message).toContain("required");
+          expect(message).toContain("expected");
+          expect(message).toContain("record");
         }
       });
 
@@ -199,7 +200,7 @@ describe("Copyright config", () => {
             expect(message).toContain(ruleKey);
             expect(message).toContain("extensions");
             expect(message).toContain("placement");
-            expect(message).toContain("required");
+            expect(message).toContain("expected");
           }
         });
       });
@@ -229,7 +230,8 @@ describe("Copyright config", () => {
             expect(message).toContain("rules");
             expect(message).toContain(ruleKey);
             expect(message).toContain("copyright");
-            expect(message).toContain("required");
+            expect(message).toContain("expected");
+            expect(message).toContain("string");
           }
         });
 
@@ -321,8 +323,7 @@ describe("Copyright config", () => {
             expect(message).toContain(ruleKey);
             expect(message).toContain("extensions");
             expect(message).toContain("array");
-            expect(message).toContain("contain");
-            expect(message).toContain("1");
+            expect(message).toContain(">=1");
           }
         });
       });
