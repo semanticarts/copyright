@@ -3,7 +3,6 @@
  * @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
  */
 
-/* eslint-disable max-classes-per-file */
 export class ArgError extends Error {
   constructor(message: string) {
     super(`ArgError: ${message}`);

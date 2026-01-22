@@ -33,7 +33,7 @@ interface FailedResult {
 function runCopyrightOnFiles(filepaths: string[], command: Command): void {
   const edited: string[] = [];
   const failed: FailedResult[] = [];
-  // eslint-disable-next-line dot-notation
+
   const root = process.env["PWD"] as string;
 
   filepaths.forEach((filepath) => {

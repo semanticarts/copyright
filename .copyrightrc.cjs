@@ -6,7 +6,7 @@ module.exports = {
       prefix: "#!/usr/bin/env node",
       copyright:
         "/**\n" +
-        ` * @copyright Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n` +
+        " * @copyright Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n" +
         " * @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license\n" +
         " */",
       options: { forcePrefixOrSuffix: false },
@@ -17,7 +17,7 @@ module.exports = {
       placement: "top",
       copyright:
         "<!--\n" +
-        `* @copyright Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n` +
+        "* @copyright Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n" +
         "* @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license\n" +
         "-->",
     },
@@ -27,7 +27,7 @@ module.exports = {
       placement: "top",
       copyright:
         "#\n" +
-        `# Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n` +
+        "# Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n" +
         "# Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license\n" +
         "#",
     },
@@ -38,7 +38,7 @@ module.exports = {
       prefix: "#!/bin/bash -",
       copyright:
         "#\n" +
-        `# Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n` +
+        "# Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n" +
         "# Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license\n" +
         "#",
     },
@@ -49,7 +49,7 @@ module.exports = {
       prefix: "#!/usr/bin/env python\n# -*- coding: UTF-8 -*-",
       copyright:
         "#\n" +
-        `# @copyright Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n` +
+        "# @copyright Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n" +
         "# @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license\n" +
         "#",
     },
@@ -60,7 +60,7 @@ module.exports = {
       copyright:
         "## License\n" +
         "\n" +
-        `- Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n` +
+        "- Copyright © 2018 - {{{currentYear}}} by Semantic Arts LLC\n" +
         "- Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license",
     },
   },
