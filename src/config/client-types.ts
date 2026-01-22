@@ -8,7 +8,7 @@ import {
   Placement,
   ExtensionRuleOptions,
   CopyrightConfigOptions,
-} from "../types";
+} from "../types.js";
 
 /**
  * This conforms loosely to the CopyrightConfig type.
@@ -92,8 +92,8 @@ export const clientDefinedExtensionRuleSchema = z
       .transform((s: string) =>
         s.replace(
           /\{\{\{currentYear\}\}\}/g,
-          new Date().getFullYear().toString()
-        )
+          new Date().getFullYear().toString(),
+        ),
       ),
     prefix: z.string().optional(),
     suffix: z.string().optional(),
@@ -125,11 +125,11 @@ export const clientDefinedExtensionRuleSchema = z
   }))
   .refine(
     (data) => !(data.placement === Placement.Bottom && data.prefix),
-    "A 'prefix' string can only be defined if 'placement' is 'top'!. Got 'placement' of 'bottom'"
+    "A 'prefix' string can only be defined if 'placement' is 'top'!. Got 'placement' of 'bottom'",
   )
   .refine(
     (data) => !(data.placement === Placement.Top && data.suffix),
-    "A 'suffix' string can only be defined if 'placement' is 'bottom'. Got 'placement' of 'top'!"
+    "A 'suffix' string can only be defined if 'placement' is 'bottom'. Got 'placement' of 'top'!",
   );
 
 export const clientDefinedCopyrightConfigSchema = z
@@ -138,7 +138,7 @@ export const clientDefinedCopyrightConfigSchema = z
       .record(z.string(), clientDefinedExtensionRuleSchema)
       .refine(
         (data) => Object.keys(data).length > 0,
-        "Config must include at least one extension rule in the 'rules' object!"
+        "Config must include at least one extension rule in the 'rules' object!",
       ),
     options: z
       .object({

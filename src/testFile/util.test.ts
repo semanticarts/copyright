@@ -3,13 +3,13 @@
  * @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
  */
 
-import config from "../config/config";
-import { ExtensionNotFoundError } from "../errors";
+import config from "../config/config.js";
+import { ExtensionNotFoundError } from "../errors.js";
 import {
   shouldIgnoreFile,
   displayPath,
   getExtensionRuleByExtension,
-} from "./util";
+} from "./util.js";
 
 describe("shouldIgnoreFile()", () => {
   it("should ignore dot files", () => {
@@ -37,7 +37,7 @@ describe("shouldIgnoreFile()", () => {
 describe("getExtensionRuleByExtension()", () => {
   it("finds the correct rule", () => {
     expect(
-      getExtensionRuleByExtension("js", config.rules).extensions
+      getExtensionRuleByExtension("js", config.rules).extensions,
     ).toContain("js");
   });
 
@@ -54,7 +54,7 @@ describe("displayPath()", () => {
   it("works correctly", () => {
     expect(displayPath("/some/file/path", "/some/file/")).toBe("path");
     expect(displayPath("some/relative/path", "something else")).toBe(
-      "some/relative/path"
+      "some/relative/path",
     );
   });
 });

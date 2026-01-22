@@ -3,9 +3,9 @@
  * @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
  */
 
-import { ConfigValidationError } from "../errors";
-import { Placement } from "../types";
-import { buildConfig } from "./config";
+import { ConfigValidationError } from "../errors.js";
+import { Placement } from "../types.js";
+import { buildConfig } from "./config.js";
 
 describe("Copyright config", () => {
   const ruleKey = "some rule";
@@ -30,7 +30,7 @@ describe("Copyright config", () => {
       expect(config.rules[ruleKey]?.extensions).toEqual(["some"]);
       expect(config.rules[ruleKey]?.placement).toEqual(Placement.Top);
       expect(config.rules[ruleKey]?.copyright).toEqual(
-        `some copyright, written in current year: ${new Date().getFullYear()}, signed ${new Date().getFullYear()}`
+        `some copyright, written in current year: ${new Date().getFullYear()}, signed ${new Date().getFullYear()}`,
       );
       expect(config.options).toBeDefined();
       expect(config.options.ignoreStartsWithDot).toBe(true);

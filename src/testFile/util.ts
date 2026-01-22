@@ -5,9 +5,9 @@
 
 import path from "path";
 
-import config from "../config/config";
-import { ExtensionNotFoundError } from "../errors";
-import { ExtensionRule, CopyrightConfigRules } from "../types";
+import config from "../config/config.js";
+import { ExtensionNotFoundError } from "../errors.js";
+import { ExtensionRule, CopyrightConfigRules } from "../types.js";
 
 /**
  * Get the supported extensions. That is, all extensions defined in extensionMap.
@@ -20,7 +20,7 @@ const getSupportedExtensions = (extensionRules: ExtensionRule[]): string[] => {
       ...extensions,
       ...extensionRule.extensions,
     ],
-    []
+    [],
   );
 
   return supportedExtensions;
@@ -42,10 +42,10 @@ export const shouldIgnoreFile = (filepath: string): boolean => {
 
   // Get all of the extensionRuleMap[x].extensions into a single array
   const supportedExtensions = getSupportedExtensions(
-    Object.values(config.rules)
+    Object.values(config.rules),
   );
   const supportedExtensionsRegex = new RegExp(
-    `\\.(${supportedExtensions.join("|")})$`
+    `\\.(${supportedExtensions.join("|")})$`,
   );
 
   const conditions = [
@@ -54,7 +54,7 @@ export const shouldIgnoreFile = (filepath: string): boolean => {
   ];
   const ignoreFile = !conditions.reduce(
     (totalBool, current) => totalBool && current,
-    true
+    true,
   );
 
   return ignoreFile;
@@ -68,7 +68,7 @@ export const shouldIgnoreFile = (filepath: string): boolean => {
  */
 export const getExtensionRuleByExtension = (
   extension: string,
-  rules: CopyrightConfigRules
+  rules: CopyrightConfigRules,
 ): ExtensionRule => {
   let foundRule: ExtensionRule | null = null;
 
@@ -83,7 +83,7 @@ export const getExtensionRuleByExtension = (
   }
 
   throw new ExtensionNotFoundError(
-    `Extension ${extension} was not found to live inside of an extension rule. This should not happen!`
+    `Extension ${extension} was not found to live inside of an extension rule. This should not happen!`,
   );
 };
 

@@ -3,8 +3,8 @@
  * @license Semantic Arts' Limited Access Open Source Full License https://semanticarts.com/license
  */
 
-import testFile from "./testFile";
+import testFile from "./testFile.js";
 
-export { displayPath } from "./util";
+export { displayPath } from "./util.js";
 
 export default testFile;

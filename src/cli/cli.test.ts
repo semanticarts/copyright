@@ -7,7 +7,7 @@ import child from "child_process";
 import util from "util";
 import path from "path";
 
-import { Command, Mode } from "../types";
+import { Command, Mode } from "../types.js";
 
 const scriptPath = path.join("./", "dist/src/cli/cli.js");
 
@@ -21,7 +21,7 @@ interface ExecResult {
 async function runTest(
   command: Command | string = "",
   mode: Mode | string = "",
-  args: string[] = []
+  args: string[] = [],
 ): Promise<{ stdout: string; stderr: string }> {
   let result: ExecResult;
   try {

@@ -4,16 +4,23 @@
  */
 
 import fs from "fs";
-import { escapeRegExp } from "lodash";
+import lodash from "lodash";
 import path from "path";
 
 import {
   shouldIgnoreFile,
   displayPath,
   getExtensionRuleByExtension,
-} from "./util";
+} from "./util.js";
 
-import { CopyrightConfig, ExtensionRule, Placement, Command } from "../types";
+import {
+  CopyrightConfig,
+  ExtensionRule,
+  Placement,
+  Command,
+} from "../types.js";
+
+const { escapeRegExp } = lodash;
 
 /**
  * Replace the content of a file with new content.
@@ -145,7 +152,7 @@ const generateRegex = (extensionRule: ExtensionRule): RegExp => {
 
   // The copyright string with [0-9]{4} instead of current year
   const copyrightRegexString = replaceYearWithRegex(
-    escapeRegExp(unsafeCopyright)
+    escapeRegExp(unsafeCopyright),
   );
 
   const prefix = makeOptionalRegex("prefix", escapeRegExp(unsafePrefix));
@@ -183,7 +190,7 @@ const generateRegex = (extensionRule: ExtensionRule): RegExp => {
       else if (typeof stringOrArray === "string") total.push(stringOrArray);
       return total;
     },
-    []
+    [],
   );
 
   const totalRegex = new RegExp(regexStructure.join(""));
@@ -212,7 +219,7 @@ interface StructureDefaults {
 function reconstructFileFromStructure(
   extensionRule: ExtensionRule,
   matchGroups: { [x: string]: string },
-  command: Command
+  command: Command,
 ) {
   const { prefix, suffix, copyright } = extensionRule;
   const defaults: StructureDefaults = {
@@ -289,7 +296,7 @@ export default function testFile(
   filepath: string,
   root: string,
   command: Command,
-  config: CopyrightConfig
+  config: CopyrightConfig,
 ): FileTestResult {
   try {
     if (shouldIgnoreFile(filepath)) {
@@ -320,7 +327,7 @@ export default function testFile(
       regexResults.groups as {
         [key: string]: string; // Cast because I know the regex has named groups
       },
-      command
+      command,
     );
 
     // Replace the contents of the file with the reconstructed contents

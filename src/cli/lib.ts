@@ -4,20 +4,20 @@
  */
 
 import fs from "fs-extra";
-import yargs, { CommandBuilder, Arguments } from "yargs";
+import { Argv, Arguments } from "yargs";
 
-import copyright from "../copyright";
+import copyright from "../copyright.js";
 
-import { Command, Mode } from "../types";
-import { ArgError } from "../errors";
+import { Command, Mode } from "../types.js";
+import { ArgError } from "../errors.js";
 
 export type Options = {
   args: string[];
   recursive: boolean | undefined;
 };
 
-export const builder: CommandBuilder<Options, Options> = () =>
-  yargs
+export const builder = (args: Argv) =>
+  args
     .options({
       recursive: {
         type: "boolean",
@@ -39,7 +39,7 @@ export const builder: CommandBuilder<Options, Options> = () =>
             }
             return nonexistent;
           },
-          []
+          [],
         );
 
         if (nonexistentFiles.length === 1) {
@@ -65,7 +65,7 @@ export const builder: CommandBuilder<Options, Options> = () =>
  */
 export const commonHandler = (
   argv: Arguments<Options>,
-  command: Command
+  command: Command,
 ): void => {
   const { recursive, args } = argv;
 
@@ -74,7 +74,7 @@ export const commonHandler = (
     copyright(args, command, mode);
   } catch (error) {
     if (error instanceof ArgError) {
-      yargs.showHelp();
+      console.error("Use --help for usage information.");
     }
 
     console.error((error as Error).message);

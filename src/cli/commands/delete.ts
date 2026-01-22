@@ -4,10 +4,10 @@
  */
 
 import { Arguments } from "yargs";
-import { Command } from "../../types";
-import { Options, commonHandler } from "../lib";
+import { Command } from "../../types.js";
+import { Options, commonHandler } from "../lib.js";
 
-export { builder } from "../lib";
+export { builder } from "../lib.js";
 
 export const command = "delete [-r|--recursive] <args..>";
 export const desc =

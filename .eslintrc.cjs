@@ -7,6 +7,10 @@ module.exports = {
   },
   settings: {
     "import/resolver": {
+      typescript: {
+        alwaysTryTypes: true,
+        project: "./tsconfig.json",
+      },
       node: {
         extensions: [".js", ".jsx", ".ts", ".tsx"],
       },
@@ -35,12 +39,13 @@ module.exports = {
       "error",
       "ignorePackages",
       {
-        js: "never",
+        js: "always",
         jsx: "never",
         ts: "never",
         tsx: "never",
       },
     ],
+    "import/no-unresolved": "off",
     "no-restricted-syntax": [
       "error",
       "ForInStatement",

@@ -2,6 +2,7 @@
   "name": "@semantic-arts/copyright",
   "version": "1.0.0",
   "description": "A script to automate copyrighting files",
+  "type": "module",
   "main": "index.js",
   "bin": {
     "copyright": "./dist/src/cli/cli.js"
@@ -14,7 +15,7 @@
     "package": "pkg . --targets node14-macos-x64 --output copyright",
     "build": "npm run clean; tsc; chmod +x ./dist/src/cli/cli.js",
     "clean": "rm -rf ./dist; rm copyright",
-    "test": "npm run build; jest",
+    "test": "npm run build; NODE_OPTIONS='--experimental-vm-modules' jest",
     "prepare": "husky install"
   },
   "pkg": {
@@ -23,12 +24,10 @@
   "author": "Kaspar Poland @ Semantic Arts",
   "license": "ISC",
   "dependencies": {
-    "child_process": "^1.0.2",
     "cosmiconfig": "^9.0.0",
     "fs-extra": "^11.3.3",
     "glob": "^13.0.0",
     "lodash": "^4.17.23",
-    "path": "^0.12.7",
     "tmp": "^0.2.5",
     "ts-transformer-keys": "^0.4.4",
     "winston": "^3.19.0",
@@ -49,6 +48,7 @@
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.5",
     "husky": "^9.1.7",

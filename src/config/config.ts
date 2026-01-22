@@ -5,10 +5,10 @@
 
 import { cosmiconfigSync } from "cosmiconfig";
 import { ZodError, ZodIssue } from "zod";
-import { ConfigValidationError } from "../errors";
+import { ConfigValidationError } from "../errors.js";
 
-import { CopyrightConfig } from "../types";
-import { clientDefinedCopyrightConfigSchema } from "./client-types";
+import { CopyrightConfig } from "../types.js";
+import { clientDefinedCopyrightConfigSchema } from "./client-types.js";
 
 /**
  * Format a ZodError into a human readable message.
@@ -60,18 +60,35 @@ export function buildConfig(config: unknown): CopyrightConfig {
  */
 export function resolveConfig(): CopyrightConfig {
   const explorer = cosmiconfigSync("copyright", {
-    searchPlaces: ["package.json", ".copyrightrc.js", "copyright.config.js"],
+    searchPlaces: [
+      "package.json",
+      ".copyrightrc.js",
+      ".copyrightrc.cjs",
+      "copyright.config.js",
+      "copyright.config.cjs",
+    ],
   });
 
   const result = explorer.search();
 
   if (!result) {
     throw Error(
-      "Config was not found! Either include a '.copyrightrc.js' or 'copyright.config.js' file, or a \"copyright\" key in your package.json"
+      "Config was not found! Either include a '.copyrightrc.js' or 'copyright.config.js' file, or a \"copyright\" key in your package.json",
     );
   }
 
-  const config = buildConfig(result.config);
+  // Handle ESM default exports - cosmiconfig may wrap them
+  let configData = result.config;
+  if (
+    configData &&
+    typeof configData === "object" &&
+    "default" in configData &&
+    !("rules" in configData)
+  ) {
+    configData = (configData as { default: unknown }).default;
+  }
+
+  const config = buildConfig(configData);
   return config;
 }
 

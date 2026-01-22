@@ -6,11 +6,11 @@
 import fs from "fs-extra";
 import { globSync } from "glob";
 
-import { ArgError } from "./errors";
-import config from "./config/config";
-import testFile, { displayPath } from "./testFile";
+import { ArgError } from "./errors.js";
+import config from "./config/config.js";
+import testFile, { displayPath } from "./testFile/index.js";
 
-import { Command, Mode } from "./types";
+import { Command, Mode } from "./types.js";
 
 function getFiles(src: string): string[] {
   const matches = globSync(`${src}/**/*.*`, {
@@ -47,23 +47,23 @@ function runCopyrightOnFiles(filepaths: string[], command: Command): void {
 
   if (edited.length === 0 && failed.length === 0) {
     console.info(
-      "All files in this project have the correct copyright information!\nNo action required.\n"
+      "All files in this project have the correct copyright information!\nNo action required.\n",
     );
   } else if (edited.length > 0) {
     console.info(
-      "There were files in this project that had incorrect copyright information, but have been fixed:"
+      "There were files in this project that had incorrect copyright information, but have been fixed:",
     );
     console.info(
       edited
         .map((filepath: string) => displayPath(filepath, root))
         .map((filepath: string) => `-> ${filepath}`)
-        .join("\n")
+        .join("\n"),
     );
   }
 
   if (failed.length > 0) {
     console.warn(
-      "Some files failed to process. You may have to edit these by hand: "
+      "Some files failed to process. You may have to edit these by hand: ",
     );
     console.warn(
       failed
@@ -71,7 +71,7 @@ function runCopyrightOnFiles(filepaths: string[], command: Command): void {
           const nicePath = displayPath(filepath, root);
           return ` -> File ${nicePath} failed for reason: ${error}`;
         })
-        .join("\n")
+        .join("\n"),
     );
   }
 }
@@ -91,7 +91,7 @@ function collectFiles(fileOrDirPaths: string[], mode: Mode): string[] {
 
     if (stats.isDirectory() && mode === Mode.Selective) {
       throw new ArgError(
-        `Error: The filepath ${fileOrDirPath} is a directory. Did you mean to enable '--recursive'?`
+        `Error: The filepath ${fileOrDirPath} is a directory. Did you mean to enable '--recursive'?`,
       );
     } else if (stats.isDirectory() && mode === Mode.Recursive) {
       files.push(...getFiles(fileOrDirPath));
@@ -114,7 +114,7 @@ function collectFiles(fileOrDirPaths: string[], mode: Mode): string[] {
 export default function copyright(
   filepaths: string[],
   command: Command,
-  mode: Mode
+  mode: Mode,
 ) {
   const collectedFiles = collectFiles(filepaths, mode);
   runCopyrightOnFiles(collectedFiles, command);

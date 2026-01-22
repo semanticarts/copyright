@@ -6,9 +6,9 @@
 import fs from "fs-extra";
 import path from "path";
 
-import { Command, Mode } from "./types";
-import copyright from "./copyright";
-import { ArgError } from "./errors";
+import { Command, Mode } from "./types.js";
+import copyright from "./copyright.js";
+import { ArgError } from "./errors.js";
 
 const testDir = path.join("./", "test");
 const tempDir = path.join(testDir, "tmp");
@@ -41,7 +41,7 @@ const testCase = (
   tempCommand: Command,
   tempPath: string,
   idealData: string,
-  casePath: string
+  casePath: string,
 ) => {
   fs.copyFileSync(casePath, tempPath);
 
@@ -54,7 +54,7 @@ const testCase = (
 
 const forEachExtension = (
   dataPath: string,
-  callback: (ext: string) => void
+  callback: (ext: string) => void,
 ) => {
   fs.readdirSync(dataPath).forEach((ext) => {
     // Removes .DS_Store and other undesirable directories
@@ -75,7 +75,7 @@ const forEachExtension = (
  */
 const forEachFile = (
   directory: string,
-  callback: (filename: string) => void
+  callback: (filename: string) => void,
 ) => {
   fs.readdirSync(directory).forEach((filename) => {
     callback(filename);
