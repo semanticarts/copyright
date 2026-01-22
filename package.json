@@ -15,7 +15,7 @@
     "package": "pkg . --targets node14-macos-x64 --output copyright",
     "build": "npm run clean; tsc; chmod +x ./dist/src/cli/cli.js",
     "clean": "rm -rf ./dist; rm copyright",
-    "test": "npm run build; NODE_OPTIONS='--experimental-vm-modules' jest",
+    "test": "npm run build && vitest run",
     "prepare": "husky install"
   },
   "pkg": {
@@ -38,13 +38,13 @@
     "@types/eslint": "^8.56.12",
     "@types/fs-extra": "^11.0.4",
     "@types/glob": "^9.0.0",
-    "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.23",
     "@types/node": "^25.0.10",
     "@types/tmp": "^0.2.6",
     "@types/yargs": "^17.0.35",
     "@typescript-eslint/eslint-plugin": "^8.53.1",
     "@typescript-eslint/parser": "^8.53.1",
+    "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
@@ -52,13 +52,12 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.5",
     "husky": "^9.1.7",
-    "jest": "^30.2.0",
     "npm-check-updates": "^19.3.1",
     "pkg": "^5.8.1",
     "prettier": "^3.8.1",
-    "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "ts-to-zod": "^5.1.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.0"
   }
 }
