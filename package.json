@@ -16,7 +16,7 @@
     "build": "npm run clean; tsc; chmod +x ./dist/src/cli/cli.js",
     "clean": "rm -rf ./dist; rm copyright",
     "test": "npm run build && vitest run",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "pkg": {
     "scripts": "dist/**/*.js"
