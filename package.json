@@ -26,7 +26,7 @@
   "dependencies": {
     "cosmiconfig": "^9.0.0",
     "fs-extra": "^11.3.3",
-    "glob": "^13.0.1",
+    "glob": "^13.0.6",
     "lodash": "^4.17.23",
     "tmp": "^0.2.5",
     "ts-transformer-keys": "^0.4.4",
