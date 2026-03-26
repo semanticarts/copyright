@@ -39,7 +39,7 @@
     "@types/eslint": "^9.6.1",
     "@types/fs-extra": "^11.0.4",
     "@types/glob": "^9.0.0",
-    "@types/lodash": "^4.17.23",
+    "@types/lodash": "^4.17.24",
     "@types/node": "^25.2.3",
     "@types/tmp": "^0.2.6",
     "@types/yargs": "^17.0.35",
