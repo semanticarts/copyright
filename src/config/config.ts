@@ -49,7 +49,9 @@ export function buildConfig(config: unknown): CopyrightConfig {
       throw new ConfigValidationError(formatError(error));
     }
 
-    throw Error(`Something unexpected went wrong! Error: ${error}`);
+    throw Error(`Something unexpected went wrong! Error: ${error}`, {
+      cause: error,
+    });
   }
 }
 

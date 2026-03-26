@@ -6,7 +6,7 @@
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import prettierPlugin from "eslint-plugin-prettier/recommended";
-import importPlugin from "eslint-plugin-import";
+import importPlugin from "eslint-plugin-import-x";
 
 export default tseslint.config(
   // Global ignores
